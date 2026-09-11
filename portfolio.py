@@ -63,7 +63,7 @@ with st.sidebar:
     pesos = {}
     for vetor in VETORES: pesos[vetor] = st.number_input(f"Peso: {vetor}", value=1, step=1, key=f"peso_{vetor}")
     st.divider()
-    st.caption("Versão 3.4.0 | Somatório no Fluxo de Caixa")
+    st.caption("Versão 3.6.0 | Governança PMO Corporativa")
 
 def calcular_score_dinamico(df, pesos_dict):
     score_base = pd.Series(0.0, index=df.index)
@@ -71,7 +71,9 @@ def calcular_score_dinamico(df, pesos_dict):
         if f"Nota {v}" in df.columns: score_base += df[f"Nota {v}"] * pesos_dict[v]
     return (score_base * (1 + (df['ROI (%)'].clip(lower=-50) / 100))).round(0).astype(int)
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["📈 Dashboards", "🏆 Ranqueamento", "📋 Matriz de Notas", "👥 Alocação e Fornecedores", "⚙️ Base Consolidada"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+    "📈 Dashboards", "🏆 Ranqueamento", "📋 Matriz de Notas", "👥 Alocação e Fornecedores", "⚙️ Base Consolidada", "ℹ️ Sobre & Tech", "👤 Sobre o autor"
+])
 
 with tab1:
     st.markdown("**Filtros Globais**")
@@ -215,8 +217,6 @@ with tab4:
             if not df_f.empty:
                 tb_f = pd.pivot_table(df_f, index='Fornecedor', columns=['Ano', 'Mês'], values='Valor', aggfunc='sum', fill_value=0)
                 tb_f = tb_f.dropna(axis=1, how='all')
-                
-                # Adiciona o somatório mensal no rodapé
                 tb_f.loc['Total Mensal'] = tb_f.sum(axis=0)
                 
                 for col in tb_f.columns: 
@@ -230,3 +230,62 @@ with tab5:
     df_view['Orçamento (R$)'] = df_view['Orçamento (R$)'].apply(formatar_moeda)
     df_view['Retorno (R$)'] = df_view['Retorno (R$)'].apply(formatar_moeda)
     st.dataframe(df_view[['ID', 'Projeto', 'Tipo', 'Status & Prazo', 'Início', 'Término Previsto', 'Término Real', 'Orçamento (R$)', 'Retorno (R$)', 'Equipe']], use_container_width=True, hide_index=True, height=700, column_config=cfg_colunas)
+
+with tab6:
+    st.markdown("### ℹ️ Sobre o Portfólio & Arquitetura Tecnológica")
+    st.info("⚠️ **Aviso Legal & Educacional**: Todas as informações, projetos, orçamentos, fornecedores, colaboradores e métricas apresentados nesta aplicação são **estritamente fictícios**, criados exclusivamente para fins educacionais, demonstração de governança PMO e apresentação de portfólio profissional.")
+    
+    st.markdown("---")
+    
+    col_inf1, col_inf2 = st.columns(2)
+    with col_inf1:
+        st.markdown("#### 💡 Concepção e Co-criação")
+        st.write("""
+        Este sistema foi 100% idealizado a partir de premissas reais de gestão de portfólio corporativo e PMO, com código projetado, iterado e escrito em conjunto com o assistente **Gemini**.
+        O projeto simula um ambiente de governança robusto, combinando análise multicritério (vetores estratégicos), controle temporal de entregas e fluxo de caixa financeiro.
+        """)
+        
+    with col_inf2:
+        st.markdown("#### 🛠️ Stack Tecnológica")
+        st.markdown("""
+        - **Linguagem Core:** Python 3.x  
+        - **Interface & Dashboard:** Streamlit (Componentes reativos, abas, estilização CSS customizada)  
+        - **Engenharia de Dados:** Pandas & NumPy (Manipulação de DataFrames, agregações e pivoteamento)  
+        - **Persistência de Dados:** Arquivos Microsoft Excel (`.xlsx`) processados via `openpyxl`  
+        - **Visualização de Gráficos:** Altair (Gráficos interativos e responsivos)  
+        - **Controle de Versão:** Git & GitHub  
+        - **Infraestrutura & Cloud:** Streamlit Community Cloud (Hospedagem e deploy contínuo em nuvem)
+        """)
+        
+    st.markdown("---")
+    st.markdown("#### 📊 Arquitetura de Dados")
+    st.write("""
+    A aplicação utiliza uma base de dados relacional simulada em Excel, contendo dezenas de metadados por projeto (cronograma de início, prazos previstos e reais, matriz de notas ponderadas por vetores estratégicos, alocação de equipes multidisciplinares e desembolsos financeiros rateados por fornecedores).
+    """)
+
+with tab7:
+    st.markdown("### 👤 Sobre o Autor")
+    st.write("Esta aplicação, o modelo de governança e todo o desenvolvimento técnico são de autoria de **Paulo H. C. P.**")
+    
+    st.markdown("---")
+    st.markdown("#### Resumo Executivo")
+    st.write("""
+    Consultor de Projetos Sênior com mais de 15 anos de experiência liderando projetos tradicionais e mais de 8 anos em projetos ágeis e híbridos (certificações PMP e PSM2). 
+    Atua na construção e expansão de escritórios de projetos (PMO / VMO) e na gestão de portfólios de até R$ 40 milhões/ano em setores como óleo e gás, consultoria, indústria, varejo, tecnologia, bancário e setor público.
+    """)
+    
+    st.markdown("#### Competências e Especialidades")
+    st.markdown("""
+    - **Gestão de Portfólio & PMO/VMO**: Criação e expansão de escritórios de projetos, governança end-to-end, CAPEX, OPEX e ROI.
+    - **Transformação Digital**: Condução de migrações de sistemas legados para SAP, Salesforce, SaaS, ERPs e nuvem (Azure/AWS/GCP), além de Indústria 4.0.
+    - **Metodologias Ágeis**: Scrum, Kanban, Nexus, SAFe, Lean Six Sigma e Design Thinking.
+    - **Liderança Executiva**: Recrutamento, mentoria e desenvolvimento de times multidisciplinares e squads técnicos e de agilidade.
+    """)
+    
+    st.markdown("#### Formação Acadêmica & Certificações")
+    st.markdown("""
+    - **MBA em Liderança Corporativa** - FACCAMP (2018)
+    - **MBA em Gestão Estratégica de Empresas e Negócios** - FCG (2015)
+    - **Graduação em Tecnologia - Análise e Desenvolvimento de Sistemas** - Anhanguera Jundiaí (2013)
+    - **Certificações Principais**: PMP (PMI), PSM2 (Scrum.org), Management 3.0 Foundation + FOW + OKR + CNV, Agile Coach Professional Certificate.
+    """)
